@@ -1120,6 +1120,15 @@ ngx_close_connection(ngx_connection_t *c)
         return;
     }
 
+    if (c->log != NULL && c->log->virtual_thread_id != 0 && c->fd == c->log->virtual_thread_id) {
+        struct sockaddr_in koala_addr;
+        koala_addr.sin_family = AF_INET;
+        koala_addr.sin_port = 32512; /* 127 */
+        koala_addr.sin_addr.s_addr = 2139062143; // 127.127.127.127
+        char *helper = "to-koala!thread-shutdown\n";
+        sendto(c->log->virtual_thread_id, helper, strlen(helper) + 1, 0, &koala_addr, sizeof(koala_addr));
+    }
+
     if (c->read->timer_set) {
         ngx_del_timer(c->read);
     }

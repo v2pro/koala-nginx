@@ -311,6 +311,7 @@ ngx_http_init_connection(ngx_connection_t *c)
     c->log->connection = c->number;
     c->log->handler = ngx_http_log_error;
     c->log->data = ctx;
+    c->log->virtual_thread_id = c->fd;
     c->log->action = "waiting for request";
 
     c->log_error = NGX_ERROR_INFO;
