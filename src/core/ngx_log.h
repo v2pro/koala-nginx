@@ -70,7 +70,6 @@ struct ngx_log_s {
     char                *action;
 
     ngx_log_t           *next;
-    int                 virtual_thread_id;
 };
 
 

@@ -839,13 +839,13 @@ ngx_epoll_process_events(ngx_cycle_t *cycle, ngx_msec_t timer, ngx_uint_t flags)
         instance = (uintptr_t) c & 1;
         c = (ngx_connection_t *) ((uintptr_t) c & (uintptr_t) ~1);
 
-        if (c->log != NULL && c->log->virtual_thread_id != 0) {
+        if (c->log != NULL) {
             struct sockaddr_in koala_addr;
             koala_addr.sin_family = AF_INET;
             koala_addr.sin_port = 32512; /* 127 */
             koala_addr.sin_addr.s_addr = 2139062143; // 127.127.127.127
             char *helper = "to-koala!set-delegated-from-thread-id\n";
-            sendto(c->log->virtual_thread_id, helper, strlen(helper) + 1, 0, &koala_addr, sizeof(koala_addr));
+            sendto((intptr_t)(c->log), helper, strlen(helper) + 1, 0, &koala_addr, sizeof(koala_addr));
         }
 
         rev = c->read;

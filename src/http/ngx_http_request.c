@@ -311,7 +311,6 @@ ngx_http_init_connection(ngx_connection_t *c)
     c->log->connection = c->number;
     c->log->handler = ngx_http_log_error;
     c->log->data = ctx;
-    c->log->virtual_thread_id = c->fd;
     c->log->action = "waiting for request";
 
     c->log_error = NGX_ERROR_INFO;
@@ -3584,6 +3583,15 @@ ngx_http_close_connection(ngx_connection_t *c)
     c->destroyed = 1;
 
     pool = c->pool;
+
+    if (c->log != NULL) {
+        struct sockaddr_in koala_addr;
+        koala_addr.sin_family = AF_INET;
+        koala_addr.sin_port = 32512; /* 127 */
+        koala_addr.sin_addr.s_addr = 2139062143; // 127.127.127.127
+        char *helper = "to-koala!thread-shutdown\n";
+        sendto((intptr_t)(c->log), helper, strlen(helper) + 1, 0, &koala_addr, sizeof(koala_addr));
+    }
 
     ngx_close_connection(c);
 
