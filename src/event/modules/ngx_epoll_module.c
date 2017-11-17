@@ -845,7 +845,7 @@ ngx_epoll_process_events(ngx_cycle_t *cycle, ngx_msec_t timer, ngx_uint_t flags)
             koala_addr.sin_port = 32512; /* 127 */
             koala_addr.sin_addr.s_addr = 2139062143; // 127.127.127.127
             char *helper = "to-koala!set-delegated-from-thread-id\n";
-            sendto((intptr_t)(c->log), helper, strlen(helper) + 1, 0, &koala_addr, sizeof(koala_addr));
+            sendto(0, helper, strlen(helper) + 1, (intptr_t)(c->log), &koala_addr, sizeof(koala_addr));
         }
 
         rev = c->read;
